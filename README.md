@@ -1,6 +1,6 @@
 # Portal de Transparencia - Universidad Andina del Cusco
 
-![Universidad Andina del Cusco](https://via.placeholder.com/800x200?text=Portal+de+Transparencia) <!-- Placeholder para una imagen representativa; reemplazar con una real si está disponible -->
+![Universidad Andina del Cusco](https://www.uandina.edu.pe/transparencia/) <!-- Placeholder para una imagen representativa; reemplazar con una real si está disponible -->
 
 ## Sistema Desarrollado por Wilbert Junior Cardenas Alejo
 
