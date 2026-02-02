@@ -1,0 +1,652 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de APIs - Portal de Transparencia UAC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .content {
+            padding: 30px;
+        }
+        
+        .test-section {
+            margin-bottom: 30px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .test-section-header {
+            background: #f5f5f5;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            user-select: none;
+        }
+        
+        .test-section-header:hover {
+            background: #ebebeb;
+        }
+        
+        .test-section-body {
+            padding: 20px;
+        }
+        
+        .test-item {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 8px;
+            background: #f9f9f9;
+            border-left: 4px solid #ccc;
+        }
+        
+        .test-item.success {
+            background: #e8f5e9;
+            border-left-color: #4caf50;
+        }
+        
+        .test-item.error {
+            background: #ffebee;
+            border-left-color: #f44336;
+        }
+        
+        .test-item.warning {
+            background: #fff3e0;
+            border-left-color: #ff9800;
+        }
+        
+        .test-item.info {
+            background: #e3f2fd;
+            border-left-color: #2196f3;
+        }
+        
+        .test-icon {
+            font-size: 1.5rem;
+            margin-right: 15px;
+            min-width: 30px;
+        }
+        
+        .test-content {
+            flex: 1;
+        }
+        
+        .test-title {
+            font-weight: 600;
+            margin-bottom: 5px;
+            font-size: 1rem;
+        }
+        
+        .test-details {
+            font-size: 0.9rem;
+            color: #666;
+            font-family: 'Courier New', monospace;
+        }
+        
+        .btn-test {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin: 10px 5px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        
+        .btn-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-test:active {
+            transform: translateY(0);
+        }
+        
+        .code-block {
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 15px;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .stat-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #f3f3f3;
+            border-top: 3px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .collapse-icon {
+            margin-left: auto;
+            transition: transform 0.3s;
+        }
+        
+        .collapsed .collapse-icon {
+            transform: rotate(-90deg);
+        }
+        
+        .test-section-body.hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🧪 Test de APIs - Portal de Transparencia</h1>
+            <p>Verificación completa de todos los módulos de la carpeta /api/</p>
+        </div>
+        
+        <div class="content">
+            <!-- Estadísticas -->
+            <div class="stats" id="stats">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalAPIs">-</div>
+                    <div class="stat-label">APIs Detectadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="loadedAPIs">-</div>
+                    <div class="stat-label">APIs Cargadas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="failedAPIs">-</div>
+                    <div class="stat-label">APIs Fallidas</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="testsPassed">-</div>
+                    <div class="stat-label">Tests Exitosos</div>
+                </div>
+            </div>
+            
+            <!-- Botones de acción -->
+            <div style="text-align: center; margin-bottom: 30px;">
+                <button class="btn-test" onclick="runAllTests()">
+                    ▶️ Ejecutar Todos los Tests
+                </button>
+                <button class="btn-test" onclick="testProyectoDesarrollo()">
+                    🎯 Test Proyecto Desarrollo
+                </button>
+                <button class="btn-test" onclick="location.reload()">
+                    🔄 Recargar Página
+                </button>
+            </div>
+            
+            <!-- Resultados de tests -->
+            <div id="testResults"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================================
+         CARGAR TODAS LAS APIs EN ORDEN
+         ============================================================================ -->
+    
+    <!-- 1. Configuración de Base de Datos (debe cargar PRIMERO) -->
+    <script type="module" src="config/database.js"></script>
+    
+    <!-- 2. APIs (cargar todas las que existan) -->
+    <script type="module" src="api/actas.js"></script>
+    <script type="module" src="api/alumnos.js"></script>
+    <script type="module" src="api/becas.js"></script>
+    <script type="module" src="api/contabilidad.js"></script>
+    <script type="module" src="api/docentes.js"></script>
+    <script type="module" src="api/doc_normativos.js"></script>
+    <script type="module" src="api/get_cards.js"></script>
+    <script type="module" src="api/inversiones.js"></script>
+    <script type="module" src="api/investigacion.js"></script>
+    <script type="module" src="api/pagos.js"></script>
+    <script type="module" src="api/plan_estudios.js"></script>
+    <script type="module" src="api/proyecto_desarrollo.js"></script>
+    <script type="module" src="api/reglamentos.js"></script>
+    <script type="module" src="api/remuneraciones.js"></script>
+    
+    <!-- 3. Script de Tests -->
+    <script>
+        // =====================================================================
+        // CONFIGURACIÓN DE TESTS
+        // =====================================================================
+        
+        const API_CONFIGS = [
+            { name: 'ActasAPI', file: 'actas.js', expectedMethods: ['getAll'] },
+            { name: 'AlumnosAPI', file: 'alumnos.js', expectedMethods: ['getAll'] },
+            { name: 'BecasAPI', file: 'becas.js', expectedMethods: ['getAll'] },
+            { name: 'ContabilidadAPI', file: 'contabilidad.js', expectedMethods: ['getAll'] },
+            { name: 'DocentesAPI', file: 'docentes.js', expectedMethods: ['getAll'] },
+            { name: 'DocNormativosAPI', file: 'doc_normativos.js', expectedMethods: ['getAll'] },
+            { name: 'GetCardsAPI', file: 'get_cards.js', expectedMethods: ['getAll'] },
+            { name: 'InversionesAPI', file: 'inversiones.js', expectedMethods: ['getAll'] },
+            { name: 'InvestigacionAPI', file: 'investigacion.js', expectedMethods: ['getAll'] },
+            { name: 'PagosAPI', file: 'pagos.js', expectedMethods: ['getAll'] },
+            { name: 'PlanEstudiosAPI', file: 'plan_estudios.js', expectedMethods: ['getAll'] },
+            { name: 'ProyectoDesarrolloAPI', file: 'proyecto_desarrollo.js', expectedMethods: ['getAll'] },
+            { name: 'ReglamentosAPI', file: 'reglamentos.js', expectedMethods: ['getAll'] },
+            { name: 'RemuneracionesAPI', file: 'remuneraciones.js', expectedMethods: ['getAll'] }
+        ];
+        
+        let testResults = {
+            total: 0,
+            passed: 0,
+            failed: 0,
+            warnings: 0
+        };
+        
+        // =====================================================================
+        // FUNCIONES DE UTILIDAD
+        // =====================================================================
+        
+        function addTestResult(type, title, details, sectionId) {
+            const icons = {
+                success: '✅',
+                error: '❌',
+                warning: '⚠️',
+                info: 'ℹ️'
+            };
+            
+            let section = document.getElementById(sectionId);
+            if (!section) {
+                section = document.createElement('div');
+                section.id = sectionId;
+                section.className = 'test-section';
+                section.innerHTML = `
+                    <div class="test-section-header" onclick="toggleSection('${sectionId}')">
+                        <span>${sectionId.replace('section-', '').toUpperCase()}</span>
+                        <span class="collapse-icon">▼</span>
+                    </div>
+                    <div class="test-section-body"></div>
+                `;
+                document.getElementById('testResults').appendChild(section);
+            }
+            
+            const body = section.querySelector('.test-section-body');
+            const item = document.createElement('div');
+            item.className = `test-item ${type}`;
+            item.innerHTML = `
+                <div class="test-icon">${icons[type]}</div>
+                <div class="test-content">
+                    <div class="test-title">${title}</div>
+                    <div class="test-details">${details}</div>
+                </div>
+            `;
+            body.appendChild(item);
+            
+            // Actualizar estadísticas
+            if (type === 'success') testResults.passed++;
+            if (type === 'error') testResults.failed++;
+            if (type === 'warning') testResults.warnings++;
+            testResults.total++;
+            
+            updateStats();
+        }
+        
+        function updateStats() {
+            document.getElementById('totalAPIs').textContent = API_CONFIGS.length;
+            document.getElementById('testsPassed').textContent = testResults.passed;
+            document.getElementById('failedAPIs').textContent = testResults.failed;
+            
+            const loaded = API_CONFIGS.filter(api => window[api.name]).length;
+            document.getElementById('loadedAPIs').textContent = loaded;
+        }
+        
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const header = section.querySelector('.test-section-header');
+            const body = section.querySelector('.test-section-body');
+            
+            header.classList.toggle('collapsed');
+            body.classList.toggle('hidden');
+        }
+        
+        // =====================================================================
+        // TESTS PRINCIPALES
+        // =====================================================================
+        
+        async function runAllTests() {
+            console.log('═══════════════════════════════════════════════════════');
+            console.log('🧪 INICIANDO TESTS DE TODAS LAS APIs');
+            console.log('═══════════════════════════════════════════════════════');
+            
+            // Limpiar resultados anteriores
+            document.getElementById('testResults').innerHTML = '';
+            testResults = { total: 0, passed: 0, failed: 0, warnings: 0 };
+            
+            // Test 1: Verificar que config/database.js está cargado
+            testDatabaseConfig();
+            
+            // Test 2: Verificar cada API
+            for (const apiConfig of API_CONFIGS) {
+                await testAPI(apiConfig);
+            }
+            
+            // Test 3: Tests específicos de ProyectoDesarrolloAPI
+            await testProyectoDesarrolloDetailed();
+            
+            console.log('═══════════════════════════════════════════════════════');
+            console.log('✅ TESTS COMPLETADOS');
+            console.log(`📊 Total: ${testResults.total} | Exitosos: ${testResults.passed} | Fallidos: ${testResults.failed} | Advertencias: ${testResults.warnings}`);
+            console.log('═══════════════════════════════════════════════════════');
+        }
+        
+        function testDatabaseConfig() {
+            const sectionId = 'section-config';
+            
+            if (typeof getDB !== 'undefined') {
+                addTestResult('success', 
+                    'config/database.js cargado correctamente', 
+                    'Función getDB() está disponible globalmente',
+                    sectionId
+                );
+                
+                // Verificar que getDB funciona
+                try {
+                    const testDB = getDB('proyecto_desarrollo');
+                    if (testDB && testDB.scriptUrl) {
+                        addTestResult('success', 
+                            'getDB("proyecto_desarrollo") funciona', 
+                            `Script URL: ${testDB.scriptUrl.substring(0, 50)}...`,
+                            sectionId
+                        );
+                    } else {
+                        addTestResult('warning', 
+                            'getDB("proyecto_desarrollo") retorna objeto vacío', 
+                            'Verifica que proyecto_desarrollo esté configurado en database.js',
+                            sectionId
+                        );
+                    }
+                } catch (error) {
+                    addTestResult('error', 
+                        'Error al llamar getDB("proyecto_desarrollo")', 
+                        error.message,
+                        sectionId
+                    );
+                }
+            } else {
+                addTestResult('error', 
+                    'config/database.js NO cargado', 
+                    'getDB() no está disponible. Verifica que config/database.js existe y se carga correctamente.',
+                    sectionId
+                );
+            }
+        }
+        
+        async function testAPI(apiConfig) {
+            const sectionId = `section-${apiConfig.name.toLowerCase()}`;
+            
+            console.log(`\n──────────────────────────────────────────────────────`);
+            console.log(`🔍 Testeando: ${apiConfig.name} (${apiConfig.file})`);
+            
+            // Test 1: Verificar que el objeto API existe
+            if (typeof window[apiConfig.name] === 'undefined') {
+                addTestResult('error', 
+                    `${apiConfig.name} NO cargado`, 
+                    `El objeto window.${apiConfig.name} no existe. Verifica que api/${apiConfig.file} existe y se exporta correctamente.`,
+                    sectionId
+                );
+                console.error(`❌ ${apiConfig.name} no está cargado`);
+                return;
+            }
+            
+            addTestResult('success', 
+                `${apiConfig.name} cargado correctamente`, 
+                `window.${apiConfig.name} existe`,
+                sectionId
+            );
+            console.log(`✅ ${apiConfig.name} existe`);
+            
+            // Test 2: Verificar métodos esperados
+            const api = window[apiConfig.name];
+            for (const method of apiConfig.expectedMethods) {
+                if (typeof api[method] === 'function') {
+                    addTestResult('success', 
+                        `Método ${method}() existe`, 
+                        `${apiConfig.name}.${method} es una función`,
+                        sectionId
+                    );
+                    console.log(`  ✅ Método ${method}() existe`);
+                } else {
+                    addTestResult('error', 
+                        `Método ${method}() NO existe`, 
+                        `${apiConfig.name}.${method} no está definido o no es una función`,
+                        sectionId
+                    );
+                    console.error(`  ❌ Método ${method}() no existe`);
+                }
+            }
+            
+            // Test 3: Intentar llamar al método getAll (sin esperar respuesta real)
+            if (typeof api.getAll === 'function') {
+                try {
+                    addTestResult('info', 
+                        `Método ${apiConfig.name}.getAll() es invocable`, 
+                        'La función puede ser llamada (no se ejecutó realmente para evitar peticiones)',
+                        sectionId
+                    );
+                    console.log(`  ℹ️ ${apiConfig.name}.getAll() es invocable`);
+                } catch (error) {
+                    addTestResult('warning', 
+                        `Error al verificar ${apiConfig.name}.getAll()`, 
+                        error.message,
+                        sectionId
+                    );
+                    console.warn(`  ⚠️ Error: ${error.message}`);
+                }
+            }
+        }
+        
+        async function testProyectoDesarrolloDetailed() {
+            const sectionId = 'section-proyecto-desarrollo-detailed';
+            
+            console.log(`\n══════════════════════════════════════════════════════`);
+            console.log(`🎯 TESTS DETALLADOS DE ProyectoDesarrolloAPI`);
+            console.log(`══════════════════════════════════════════════════════`);
+            
+            if (typeof ProyectoDesarrolloAPI === 'undefined') {
+                addTestResult('error', 
+                    'ProyectoDesarrolloAPI no está disponible', 
+                    'No se pueden ejecutar tests detallados',
+                    sectionId
+                );
+                return;
+            }
+            
+            // Test: Estructura del objeto
+            addTestResult('info', 
+                'Estructura de ProyectoDesarrolloAPI', 
+                JSON.stringify(Object.keys(ProyectoDesarrolloAPI), null, 2),
+                sectionId
+            );
+            
+            // Test: Tipo de getAll
+            const getAllType = typeof ProyectoDesarrolloAPI.getAll;
+            if (getAllType === 'function') {
+                addTestResult('success', 
+                    'ProyectoDesarrolloAPI.getAll es una función', 
+                    `Tipo: ${getAllType}`,
+                    sectionId
+                );
+            } else {
+                addTestResult('error', 
+                    'ProyectoDesarrolloAPI.getAll NO es una función', 
+                    `Tipo actual: ${getAllType}`,
+                    sectionId
+                );
+            }
+            
+            // Test: Verificar método privado _agruparPorFacultad
+            if (typeof ProyectoDesarrolloAPI._agruparPorFacultad === 'function') {
+                addTestResult('success', 
+                    'Método privado _agruparPorFacultad existe', 
+                    'La API tiene el método de agrupación',
+                    sectionId
+                );
+            } else {
+                addTestResult('warning', 
+                    'Método privado _agruparPorFacultad no encontrado', 
+                    'Esto podría ser normal si es realmente privado',
+                    sectionId
+                );
+            }
+            
+            console.log(`✅ Tests detallados completados`);
+        }
+        
+        async function testProyectoDesarrollo() {
+            console.log('🎯 TEST ESPECÍFICO: ProyectoDesarrolloAPI');
+            
+            const sectionId = 'section-proyecto-test-real';
+            
+            if (typeof ProyectoDesarrolloAPI === 'undefined') {
+                addTestResult('error', 
+                    'ProyectoDesarrolloAPI no está cargado', 
+                    'Verifica que api/proyecto_desarrollo.js existe y se exporta correctamente',
+                    sectionId
+                );
+                alert('❌ ProyectoDesarrolloAPI no está cargado');
+                return;
+            }
+            
+            addTestResult('info', 
+                'Intentando llamar ProyectoDesarrolloAPI.getAll()', 
+                'Este test hará una petición real al servidor...',
+                sectionId
+            );
+            
+            try {
+                const response = await ProyectoDesarrolloAPI.getAll(false);
+                
+                addTestResult('success', 
+                    'ProyectoDesarrolloAPI.getAll() ejecutado correctamente', 
+                    JSON.stringify(response, null, 2),
+                    sectionId
+                );
+                
+                console.log('✅ Respuesta:', response);
+                
+                if (response.success) {
+                    const numFacultades = Object.keys(response.data.tablas || {}).length;
+                    addTestResult('success', 
+                        `Datos recibidos correctamente`, 
+                        `${numFacultades} facultades encontradas`,
+                        sectionId
+                    );
+                } else {
+                    addTestResult('warning', 
+                        'Respuesta indica error', 
+                        response.error || 'Error desconocido',
+                        sectionId
+                    );
+                }
+                
+                alert('✅ Test completado. Revisa los resultados en la página.');
+                
+            } catch (error) {
+                addTestResult('error', 
+                    'Error al ejecutar ProyectoDesarrolloAPI.getAll()', 
+                    error.message,
+                    sectionId
+                );
+                
+                console.error('❌ Error:', error);
+                alert('❌ Error: ' + error.message);
+            }
+        }
+        
+        // =====================================================================
+        // AUTO-EJECUTAR TESTS AL CARGAR
+        // =====================================================================
+        
+        window.addEventListener('load', () => {
+            console.log('✅ Página cargada completamente');
+            
+            // Esperar un poco para que todos los módulos se carguen
+            setTimeout(() => {
+                runAllTests();
+            }, 1000);
+        });
+        
+    </script>
+</body>
+</html>

@@ -1,0 +1,611 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TEST - Actas con Pestañas</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <style>
+        :root {
+            --color-primary: #00cdff;
+            --color-secondary: #003366;
+            --color-dark-blue: #00417b;
+            --color-red: #dc3545;
+            --color-success: #28a745;
+            --color-gray-light: #f5f5f5;
+            --color-gray-medium: #e0e0e0;
+            --color-gray-dark: #666666;
+            --color-text: #333333;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--color-gray-light);
+            color: var(--color-text);
+            line-height: 1.6;
+        }
+
+        .test-banner {
+            background: linear-gradient(135deg, #ff9800, #f44336);
+            color: white;
+            padding: 15px 30px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 1.1rem;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+
+        .test-banner i {
+            margin-right: 10px;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .page-header {
+            text-align: center;
+            margin: 50px 0;
+        }
+
+        .header-decoration {
+            width: 80px;
+            height: 4px;
+            background: linear-gradient(to right, var(--color-dark-blue), var(--color-primary));
+            margin: 0 auto 25px;
+            border-radius: 2px;
+        }
+
+        .page-title {
+            font-size: 2.8rem;
+            font-weight: 700;
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .page-title i {
+            color: var(--color-primary);
+        }
+
+        .page-subtitle {
+            font-size: 1.15rem;
+            color: var(--color-gray-dark);
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--color-secondary);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--color-primary);
+        }
+
+        .section-description {
+            font-size: 1.05rem;
+            color: var(--color-gray-dark);
+        }
+
+        /* TABS */
+        .tabs-container {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+        }
+
+        .tabs-header {
+            display: flex;
+            flex-wrap: wrap;
+            background: var(--color-secondary);
+            border-bottom: 4px solid var(--color-primary);
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 200px;
+            padding: 18px 25px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: var(--transition);
+            border-bottom: 4px solid transparent;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .tab-btn:hover {
+            background: rgba(0, 205, 255, 0.15);
+            color: white;
+        }
+
+        .tab-btn.active {
+            background: var(--color-primary);
+            color: white;
+            border-bottom-color: var(--color-dark-blue);
+        }
+
+        .tab-btn i {
+            margin-right: 10px;
+        }
+
+        .tabs-content {
+            padding: 40px;
+            min-height: 500px;
+        }
+
+        .tab-pane {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tab-pane.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* SECCIÓN HEADER */
+        .seccion-header {
+            background: linear-gradient(135deg, var(--color-dark-blue), var(--color-secondary));
+            color: white;
+            padding: 25px 35px;
+            margin: -40px -40px 35px -40px;
+            border-bottom: 5px solid var(--color-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .seccion-header h3 {
+            font-size: 1.6rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .seccion-header h3 i {
+            color: var(--color-primary);
+        }
+
+        .badge-count {
+            background: var(--color-primary);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        /* TABLA */
+        .table-wrapper {
+            margin-top: 25px;
+        }
+
+        .actas-table {
+            width: 100%;
+        }
+
+        .actas-table thead {
+            background: var(--color-primary);
+            color: white;
+        }
+
+        .actas-table thead th {
+            padding: 15px 12px;
+            font-weight: 600;
+        }
+
+        .actas-table tbody tr {
+            transition: var(--transition);
+            border-bottom: 1px solid var(--color-gray-medium);
+        }
+
+        .actas-table tbody tr:hover {
+            background-color: rgba(0, 205, 255, 0.08);
+        }
+
+        .actas-table tbody td {
+            padding: 15px 12px;
+        }
+
+        .td-numero {
+            font-weight: 600;
+            color: var(--color-dark-blue);
+        }
+
+        .badge-anio {
+            display: inline-block;
+            background: var(--color-dark-blue);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .td-fecha {
+            color: var(--color-gray-dark);
+            font-size: 0.9rem;
+        }
+
+        /* BOTÓN PDF */
+        .btn-pdf {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, var(--color-red), #c82333);
+            color: white;
+            border-radius: 10px;
+            text-decoration: none;
+            transition: var(--transition);
+            font-size: 1.5rem;
+        }
+
+        .btn-pdf:hover {
+            transform: translateY(-3px) scale(1.1);
+            box-shadow: 0 8px 20px rgba(220, 53, 69, 0.4);
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* INFO BOX */
+        .info-box {
+            background: #e3f2fd;
+            border-left: 4px solid #2196f3;
+            padding: 20px;
+            margin: 30px 0;
+            border-radius: 8px;
+        }
+
+        .info-box h4 {
+            color: #1976d2;
+            margin-bottom: 10px;
+        }
+
+        .info-box ul {
+            margin-left: 20px;
+        }
+
+        .info-box li {
+            margin: 5px 0;
+        }
+
+        /* RESPONSIVE */
+        @media (max-width: 768px) {
+            .tabs-header {
+                flex-direction: column;
+            }
+
+            .tab-btn {
+                min-width: 100%;
+                text-align: left;
+            }
+
+            .tabs-content {
+                padding: 25px;
+            }
+
+            .seccion-header {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Banner de Test -->
+    <div class="test-banner">
+        <i class="fas fa-flask"></i>
+        MODO TEST - Visualización de Actas con Pestañas (Datos de Ejemplo)
+    </div>
+
+    <!-- Contenedor Principal -->
+    <div class="container">
+        
+        <!-- Page Header -->
+        <div class="page-header">
+            <div class="header-decoration"></div>
+            <h1 class="page-title">
+                <i class="fas fa-file-signature"></i>
+                Actas Institucionales
+            </h1>
+            <p class="page-subtitle">Registro oficial de actas y acuerdos institucionales</p>
+        </div>
+
+        <!-- Info Box -->
+        <div class="info-box">
+            <h4><i class="fas fa-info-circle"></i> Información del Test</h4>
+            <ul>
+                <li><strong>Propósito:</strong> Verificar diseño con pestañas y tablas DataTables</li>
+                <li><strong>Datos:</strong> Generados automáticamente (4 secciones, ~40 actas)</li>
+                <li><strong>Características probadas:</strong>
+                    <ul>
+                        <li>✅ Sistema de pestañas funcional</li>
+                        <li>✅ Header con decoración superior</li>
+                        <li>✅ Badges para año y contador</li>
+                        <li>✅ Iconos PDF sin texto</li>
+                        <li>✅ DataTables con búsqueda y paginación</li>
+                        <li>✅ Diseño responsive</li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Actas Section -->
+        <section class="actas-section">
+            <div class="section-header">
+                <h2 class="section-title">
+                    <i class="fas fa-folder-open"></i>
+                    Repositorio de Actas
+                </h2>
+                <p class="section-description">Consulta las actas organizadas por sección</p>
+            </div>
+
+            <!-- Tabs Container -->
+            <div class="tabs-container">
+                <div class="tabs-header" id="tabsHeader">
+                    <!-- Se genera con JavaScript -->
+                </div>
+                <div class="tabs-content" id="tabsContent">
+                    <!-- Se genera con JavaScript -->
+                </div>
+            </div>
+        </section>
+
+    </div>
+
+    <script>
+        // =================================================================
+        // DATOS DE PRUEBA
+        // =================================================================
+        
+        const datosTest = [
+            // CONSEJO UNIVERSITARIO
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '001-2024-CU', anio: '2024', titulo: 'Aprobación del presupuesto anual 2024', fecha: '2024-01-15', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '002-2024-CU', anio: '2024', titulo: 'Designación de autoridades académicas', fecha: '2024-02-10', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '003-2024-CU', anio: '2024', titulo: 'Aprobación de plan de desarrollo institucional', fecha: '2024-03-05', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '004-2024-CU', anio: '2024', titulo: 'Modificación del reglamento académico', fecha: '2024-04-12', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '005-2024-CU', anio: '2024', titulo: 'Ratificación de convenios interinstitucionales', fecha: '2024-05-20', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '020-2023-CU', anio: '2023', titulo: 'Aprobación de calendario académico 2024', fecha: '2023-11-15', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '019-2023-CU', anio: '2023', titulo: 'Actualización de tasas educativas', fecha: '2023-10-30', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '018-2023-CU', anio: '2023', titulo: 'Creación de nueva carrera profesional', fecha: '2023-09-18', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '017-2023-CU', anio: '2023', titulo: 'Aprobación de proyecto de infraestructura', fecha: '2023-08-22', pdf: '#' },
+            { seccion: 'CONSEJO UNIVERSITARIO', numero: '016-2023-CU', anio: '2023', titulo: 'Reconocimiento de delegación estudiantil', fecha: '2023-07-10', pdf: '#' },
+
+            // ASAMBLEA UNIVERSITARIA
+            { seccion: 'ASAMBLEA UNIVERSITARIA', numero: '001-2024-AU', anio: '2024', titulo: 'Elección del Rector para periodo 2024-2029', fecha: '2024-01-20', pdf: '#' },
+            { seccion: 'ASAMBLEA UNIVERSITARIA', numero: '002-2024-AU', anio: '2024', titulo: 'Aprobación del Plan Estratégico Institucional', fecha: '2024-03-15', pdf: '#' },
+            { seccion: 'ASAMBLEA UNIVERSITARIA', numero: '003-2024-AU', anio: '2024', titulo: 'Modificación del Estatuto Universitario', fecha: '2024-05-10', pdf: '#' },
+            { seccion: 'ASAMBLEA UNIVERSITARIA', numero: '004-2024-AU', anio: '2024', titulo: 'Ratificación de modelo educativo institucional', fecha: '2024-07-08', pdf: '#' },
+            { seccion: 'ASAMBLEA UNIVERSITARIA', numero: '005-2023-AU', anio: '2023', titulo: 'Aprobación de memoria anual 2022', fecha: '2023-03-25', pdf: '#' },
+            { seccion: 'ASAMBLEA UNIVERSITARIA', numero: '004-2023-AU', anio: '2023', titulo: 'Designación de comisiones permanentes', fecha: '2023-02-18', pdf: '#' },
+            { seccion: 'ASAMBLEA UNIVERSITARIA', numero: '003-2023-AU', anio: '2023', titulo: 'Aprobación de estado financiero anual', fecha: '2023-01-30', pdf: '#' },
+
+            // CONSEJO DE FACULTAD
+            { seccion: 'CONSEJO DE FACULTAD', numero: '008-2024-CF-ING', anio: '2024', titulo: 'Plan curricular Ingeniería de Sistemas 2024', fecha: '2024-02-15', pdf: '#' },
+            { seccion: 'CONSEJO DE FACULTAD', numero: '009-2024-CF-ING', anio: '2024', titulo: 'Contratación de docentes para ciclo 2024-I', fecha: '2024-02-28', pdf: '#' },
+            { seccion: 'CONSEJO DE FACULTAD', numero: '010-2024-CF-ING', anio: '2024', titulo: 'Aprobación de proyectos de investigación', fecha: '2024-03-20', pdf: '#' },
+            { seccion: 'CONSEJO DE FACULTAD', numero: '011-2024-CF-DER', anio: '2024', titulo: 'Modificación de sílabo de Derecho Civil', fecha: '2024-04-05', pdf: '#' },
+            { seccion: 'CONSEJO DE FACULTAD', numero: '012-2024-CF-DER', anio: '2024', titulo: 'Aprobación de prácticas pre-profesionales', fecha: '2024-04-18', pdf: '#' },
+            { seccion: 'CONSEJO DE FACULTAD', numero: '015-2023-CF-ADM', anio: '2023', titulo: 'Plan de mejora académica 2024', fecha: '2023-11-10', pdf: '#' },
+            { seccion: 'CONSEJO DE FACULTAD', numero: '014-2023-CF-ADM', anio: '2023', titulo: 'Evaluación de desempeño docente', fecha: '2023-10-15', pdf: '#' },
+            { seccion: 'CONSEJO DE FACULTAD', numero: '013-2023-CF-MED', anio: '2023', titulo: 'Convenio con hospitales para prácticas', fecha: '2023-09-20', pdf: '#' },
+
+            // COMISIÓN ORGANIZADORA
+            { seccion: 'COMISIÓN ORGANIZADORA', numero: '001-2024-CO', anio: '2024', titulo: 'Informe de gestión primer trimestre 2024', fecha: '2024-04-01', pdf: '#' },
+            { seccion: 'COMISIÓN ORGANIZADORA', numero: '002-2024-CO', anio: '2024', titulo: 'Plan de normalización institucional', fecha: '2024-05-15', pdf: '#' },
+            { seccion: 'COMISIÓN ORGANIZADORA', numero: '003-2024-CO', anio: '2024', titulo: 'Cronograma de elecciones universitarias', fecha: '2024-06-20', pdf: '#' },
+            { seccion: 'COMISIÓN ORGANIZADORA', numero: '008-2023-CO', anio: '2023', titulo: 'Designación de comité electoral', fecha: '2023-12-10', pdf: '#' },
+            { seccion: 'COMISIÓN ORGANIZADORA', numero: '007-2023-CO', anio: '2023', titulo: 'Aprobación de padrón electoral', fecha: '2023-11-25', pdf: '#' },
+            { seccion: 'COMISIÓN ORGANIZADORA', numero: '006-2023-CO', anio: '2023', titulo: 'Lineamientos para proceso electoral', fecha: '2023-10-30', pdf: '#' }
+        ];
+
+        // =================================================================
+        // GENERAR PESTAÑAS Y TABLAS
+        // =================================================================
+
+        $(document).ready(function() {
+            console.log('🧪 TEST INICIADO');
+            console.log('📊 Total actas de prueba:', datosTest.length);
+
+            // Agrupar por sección
+            const porSeccion = {};
+            datosTest.forEach(acta => {
+                if (!porSeccion[acta.seccion]) {
+                    porSeccion[acta.seccion] = [];
+                }
+                porSeccion[acta.seccion].push(acta);
+            });
+
+            const secciones = Object.keys(porSeccion).sort();
+            console.log('📂 Secciones:', secciones);
+
+            const iconos = {
+                'CONSEJO UNIVERSITARIO': 'fa-users-cog',
+                'ASAMBLEA UNIVERSITARIA': 'fa-users',
+                'CONSEJO DE FACULTAD': 'fa-building',
+                'COMISIÓN ORGANIZADORA': 'fa-clipboard-list'
+            };
+
+            const nombresCortos = {
+                'CONSEJO UNIVERSITARIO': 'CONSEJO UNIV.',
+                'ASAMBLEA UNIVERSITARIA': 'ASAMBLEA UNIV.',
+                'CONSEJO DE FACULTAD': 'CONSEJO FAC.',
+                'COMISIÓN ORGANIZADORA': 'COM. ORGANIZADORA'
+            };
+
+            // Crear pestañas
+            secciones.forEach((seccion, index) => {
+                const tabId = `tab-${index}`;
+                const isActive = index === 0;
+                const icono = iconos[seccion] || 'fa-folder';
+                const nombreCorto = nombresCortos[seccion] || seccion;
+
+                // Botón de pestaña
+                const $btn = $(`
+                    <button class="tab-btn ${isActive ? 'active' : ''}" data-tab="${tabId}">
+                        <i class="fas ${icono}"></i> ${nombreCorto}
+                    </button>
+                `);
+
+                $btn.on('click', function() {
+                    $('.tab-btn').removeClass('active');
+                    $(this).addClass('active');
+                    $('.tab-pane').removeClass('active');
+                    $(`#${tabId}`).addClass('active');
+
+                    // Reajustar DataTable
+                    setTimeout(() => {
+                        $(`#table-${tabId}`).DataTable().columns.adjust();
+                    }, 100);
+                });
+
+                $('#tabsHeader').append($btn);
+
+                // Contenido de pestaña
+                const actas = porSeccion[seccion];
+                const $pane = $(`
+                    <div class="tab-pane ${isActive ? 'active' : ''}" id="${tabId}">
+                        <div class="seccion-header">
+                            <h3><i class="fas ${icono}"></i> ${seccion}</h3>
+                            <span class="badge-count">${actas.length} actas</span>
+                        </div>
+                        <div class="table-wrapper">
+                            <table id="table-${tabId}" class="actas-table display" style="width:100%">
+                                <thead>
+                                    <tr>
+                                        <th>Número</th>
+                                        <th>Año</th>
+                                        <th>Título</th>
+                                        <th>Fecha</th>
+                                        <th class="text-center">PDF</th>
+                                    </tr>
+                                </thead>
+                                <tbody></tbody>
+                            </table>
+                        </div>
+                    </div>
+                `);
+
+                // Agregar filas
+                const $tbody = $pane.find('tbody');
+                actas.forEach(acta => {
+                    const fechaFormateada = formatearFecha(acta.fecha);
+                    $tbody.append(`
+                        <tr>
+                            <td class="td-numero">${acta.numero}</td>
+                            <td class="text-center">
+                                <span class="badge-anio">${acta.anio}</span>
+                            </td>
+                            <td>${acta.titulo}</td>
+                            <td class="td-fecha text-center">${fechaFormateada}</td>
+                            <td class="text-center">
+                                <a href="${acta.pdf}" class="btn-pdf" title="Ver PDF">
+                                    <i class="fas fa-file-pdf"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    `);
+                });
+
+                $('#tabsContent').append($pane);
+
+                // Inicializar DataTable
+                setTimeout(() => {
+                    $(`#table-${tabId}`).DataTable({
+                        responsive: true,
+                        language: {
+                            url: '//cdn.datatables.net/plug-ins/1.13.8/i18n/es-ES.json'
+                        },
+                        pageLength: 10,
+                        order: [[1, 'desc'], [0, 'desc']]
+                    });
+                }, 100);
+            });
+
+            console.log('✅ Pestañas generadas:', secciones.length);
+        });
+
+        function formatearFecha(fecha) {
+            if (!fecha) return '-';
+            const meses = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+            const partes = fecha.split('-');
+            const dia = parseInt(partes[2]);
+            const mes = meses[parseInt(partes[1]) - 1];
+            const anio = partes[0];
+            return `${dia} ${mes} ${anio}`;
+        }
+    </script>
+
+</body>
+</html>

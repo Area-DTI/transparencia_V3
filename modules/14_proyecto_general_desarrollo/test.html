@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test ProyectoDesarrolloAPI - Diagnóstico</title>
+    <style>
+        body {
+            font-family: 'Courier New', monospace;
+            background: #1e1e1e;
+            color: #d4d4d4;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .log {
+            background: #252526;
+            border-left: 4px solid #007acc;
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+        }
+        .success { border-left-color: #4ec9b0; color: #4ec9b0; }
+        .error { border-left-color: #f48771; color: #f48771; }
+        .warning { border-left-color: #dcdcaa; color: #dcdcaa; }
+        .info { border-left-color: #569cd6; color: #569cd6; }
+        h1 { color: #4ec9b0; }
+        h2 { color: #569cd6; margin-top: 30px; }
+        button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            cursor: pointer;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+        }
+        button:hover { background: #005a9e; }
+        pre {
+            background: #1e1e1e;
+            padding: 15px;
+            overflow-x: auto;
+            border-radius: 4px;
+            border: 1px solid #3c3c3c;
+        }
+        .checklist {
+            background: #252526;
+            padding: 20px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+        .check-item {
+            padding: 8px;
+            margin: 5px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🔬 Test de ProyectoDesarrolloAPI - Diagnóstico Completo</h1>
+    
+    <div class="checklist">
+        <h2>📋 Checklist de Verificación</h2>
+        <div id="checklist"></div>
+    </div>
+    
+    <button onclick="runDiagnostics()">🔍 Ejecutar Diagnóstico</button>
+    <button onclick="testRealCall()">🌐 Test de Petición Real</button>
+    <button onclick="showConfig()">⚙️ Ver Configuración</button>
+    <button onclick="clearLogs()">🗑️ Limpiar Logs</button>
+    
+    <div id="logs"></div>
+    
+    <!-- Cargar archivos en orden -->
+    <script type="module" src="config/database.js"></script>
+    <script type="module" src="api/proyecto_desarrollo.js"></script>
+    
+    <script>
+        function log(message, type = 'info') {
+            const logs = document.getElementById('logs');
+            const timestamp = new Date().toLocaleTimeString();
+            const div = document.createElement('div');
+            div.className = `log ${type}`;
+            div.innerHTML = `<strong>[${timestamp}]</strong> ${message}`;
+            logs.appendChild(div);
+            
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            console.log(`${icons[type]} [${type.toUpperCase()}] ${message.replace(/<[^>]*>/g, '')}`);
+        }
+        
+        function clearLogs() {
+            document.getElementById('logs').innerHTML = '';
+            console.clear();
+        }
+        
+        function updateChecklist() {
+            const checks = [
+                {
+                    label: 'config/database.js cargado',
+                    test: typeof getDB !== 'undefined',
+                    fix: 'Verifica que config/database.js existe en la ruta correcta'
+                },
+                {
+                    label: 'getDB() funciona',
+                    test: typeof getDB !== 'undefined' && typeof getDB('proyecto_desarrollo') === 'object',
+                    fix: 'Verifica que database.js exporta getDB correctamente'
+                },
+                {
+                    label: 'Configuración de proyecto_desarrollo existe',
+                    test: typeof getDB !== 'undefined' && getDB('proyecto_desarrollo') && getDB('proyecto_desarrollo').scriptUrl,
+                    fix: 'Agrega proyecto_desarrollo a DB_CONFIGS en database.js'
+                },
+                {
+                    label: 'api/proyecto_desarrollo.js cargado',
+                    test: typeof ProyectoDesarrolloAPI !== 'undefined',
+                    fix: 'Verifica que api/proyecto_desarrollo.js existe y tiene: window.ProyectoDesarrolloAPI = ...'
+                },
+                {
+                    label: 'ProyectoDesarrolloAPI.getAll() existe',
+                    test: typeof ProyectoDesarrolloAPI !== 'undefined' && typeof ProyectoDesarrolloAPI.getAll === 'function',
+                    fix: 'Verifica que el objeto ProyectoDesarrolloAPI tiene el método getAll'
+                },
+                {
+                    label: 'ProyectoDesarrolloAPI._agruparPorFacultad() existe',
+                    test: typeof ProyectoDesarrolloAPI !== 'undefined' && typeof ProyectoDesarrolloAPI._agruparPorFacultad === 'function',
+                    fix: 'Verifica que el objeto tiene el método privado _agruparPorFacultad'
+                }
+            ];
+            
+            const checklist = document.getElementById('checklist');
+            checklist.innerHTML = '';
+            
+            let allPassed = true;
+            
+            checks.forEach(check => {
+                const div = document.createElement('div');
+                div.className = 'check-item';
+                const icon = check.test ? '✅' : '❌';
+                const color = check.test ? '#4ec9b0' : '#f48771';
+                div.style.color = color;
+                div.innerHTML = `${icon} ${check.label}`;
+                
+                if (!check.test) {
+                    div.innerHTML += `<br><small style="color: #dcdcaa; margin-left: 30px;">→ ${check.fix}</small>`;
+                    allPassed = false;
+                }
+                
+                checklist.appendChild(div);
+            });
+            
+            return allPassed;
+        }
+        
+        function runDiagnostics() {
+            clearLogs();
+            log('<h2>🔬 INICIANDO DIAGNÓSTICO COMPLETO</h2>', 'info');
+            
+            // 1. Verificar que la página se cargó
+            log('1️⃣ Verificando carga de página...', 'info');
+            log(`URL actual: ${window.location.href}`, 'info');
+            log(`Protocolo: ${window.location.protocol}`, 'info');
+            
+            if (window.location.protocol === 'file:') {
+                log('⚠️ ADVERTENCIA: Estás usando protocolo file://. Usa un servidor web (http://) para que los módulos ES6 funcionen.', 'warning');
+            }
+            
+            // 2. Verificar config/database.js
+            log('<br>2️⃣ Verificando config/database.js...', 'info');
+            if (typeof getDB === 'undefined') {
+                log('❌ ERROR: getDB() no está definido. config/database.js NO se cargó.', 'error');
+                log('Solución: Verifica que config/database.js existe y exporta correctamente.', 'warning');
+            } else {
+                log('✅ getDB() está disponible', 'success');
+                log(`Tipo: ${typeof getDB}`, 'info');
+                
+                // Intentar obtener configuración
+                try {
+                    const config = getDB('proyecto_desarrollo');
+                    if (config && config.scriptUrl) {
+                        log('✅ Configuración de proyecto_desarrollo encontrada', 'success');
+                        log(`<pre>${JSON.stringify(config, null, 2)}</pre>`, 'info');
+                    } else {
+                        log('❌ ERROR: getDB("proyecto_desarrollo") no retorna configuración válida', 'error');
+                        log('Solución: Agrega proyecto_desarrollo a DB_CONFIGS en database.js', 'warning');
+                    }
+                } catch (error) {
+                    log(`❌ ERROR al llamar getDB(): ${error.message}`, 'error');
+                }
+            }
+            
+            // 3. Verificar api/proyecto_desarrollo.js
+            log('<br>3️⃣ Verificando api/proyecto_desarrollo.js...', 'info');
+            if (typeof ProyectoDesarrolloAPI === 'undefined') {
+                log('❌ ERROR CRÍTICO: ProyectoDesarrolloAPI no está definido', 'error');
+                log('Esto significa que api/proyecto_desarrollo.js NO se cargó o NO exportó el objeto correctamente.', 'error');
+                log('<br><strong>Posibles causas:</strong>', 'warning');
+                log('1. El archivo api/proyecto_desarrollo.js no existe', 'warning');
+                log('2. El archivo no tiene: window.ProyectoDesarrolloAPI = ProyectoDesarrolloAPI;', 'warning');
+                log('3. Hay un error de sintaxis en el archivo que impide su carga', 'warning');
+                log('4. La ruta del script en el HTML es incorrecta', 'warning');
+                log('<br><strong>Cómo verificar:</strong>', 'info');
+                log('1. Abre las DevTools (F12) y ve a la pestaña Network', 'info');
+                log('2. Recarga la página y busca "proyecto_desarrollo.js"', 'info');
+                log('3. Si aparece en rojo (404), el archivo no existe en esa ruta', 'info');
+                log('4. Si aparece pero con error, revisa la pestaña Console para ver el error', 'info');
+            } else {
+                log('✅ ProyectoDesarrolloAPI está disponible', 'success');
+                log(`Tipo: ${typeof ProyectoDesarrolloAPI}`, 'info');
+                log(`<pre>Propiedades: ${JSON.stringify(Object.keys(ProyectoDesarrolloAPI), null, 2)}</pre>`, 'info');
+                
+                // Verificar método getAll
+                if (typeof ProyectoDesarrolloAPI.getAll === 'function') {
+                    log('✅ Método getAll() existe', 'success');
+                    log(`Código del método: ${ProyectoDesarrolloAPI.getAll.toString().substring(0, 200)}...`, 'info');
+                } else {
+                    log('❌ ERROR: Método getAll() NO existe o no es una función', 'error');
+                    log(`Tipo actual: ${typeof ProyectoDesarrolloAPI.getAll}`, 'warning');
+                }
+                
+                // Verificar método privado
+                if (typeof ProyectoDesarrolloAPI._agruparPorFacultad === 'function') {
+                    log('✅ Método privado _agruparPorFacultad() existe', 'success');
+                } else {
+                    log('⚠️ Método privado _agruparPorFacultad() no encontrado (puede ser normal)', 'warning');
+                }
+            }
+            
+            // 4. Verificar window global
+            log('<br>4️⃣ Verificando objetos globales en window...', 'info');
+            const globalAPIs = Object.keys(window).filter(key => key.includes('API'));
+            if (globalAPIs.length > 0) {
+                log(`✅ APIs encontradas en window: ${globalAPIs.join(', ')}`, 'success');
+            } else {
+                log('⚠️ No se encontraron objetos API en window', 'warning');
+            }
+            
+            // 5. Resumen
+            log('<br>5️⃣ RESUMEN DEL DIAGNÓSTICO', 'info');
+            const allPassed = updateChecklist();
+            
+            if (allPassed) {
+                log('✅ TODOS LOS CHECKS PASARON - ProyectoDesarrolloAPI está listo para usar', 'success');
+            } else {
+                log('❌ HAY PROBLEMAS - Revisa el checklist arriba para ver qué falta', 'error');
+            }
+        }
+        
+        async function testRealCall() {
+            log('<h2>🌐 TEST DE PETICIÓN REAL</h2>', 'info');
+            
+            if (typeof ProyectoDesarrolloAPI === 'undefined') {
+                log('❌ No se puede hacer el test: ProyectoDesarrolloAPI no está cargado', 'error');
+                alert('❌ ProyectoDesarrolloAPI no está cargado. Ejecuta primero el diagnóstico.');
+                return;
+            }
+            
+            if (typeof ProyectoDesarrolloAPI.getAll !== 'function') {
+                log('❌ No se puede hacer el test: ProyectoDesarrolloAPI.getAll no es una función', 'error');
+                return;
+            }
+            
+            log('Llamando a ProyectoDesarrolloAPI.getAll()...', 'info');
+            
+            try {
+                const startTime = Date.now();
+                const response = await ProyectoDesarrolloAPI.getAll(false);
+                const endTime = Date.now();
+                
+                log(`✅ Petición completada en ${endTime - startTime}ms`, 'success');
+                log(`<pre>${JSON.stringify(response, null, 2)}</pre>`, 'success');
+                
+                if (response.success) {
+                    const numFacultades = Object.keys(response.data.tablas || {}).length;
+                    log(`✅ Datos recibidos: ${numFacultades} facultades`, 'success');
+                    
+                    // Mostrar detalle de facultades
+                    Object.keys(response.data.tablas || {}).forEach(facultad => {
+                        const numDocs = response.data.tablas[facultad].length;
+                        log(`  - ${facultad}: ${numDocs} documento(s)`, 'info');
+                    });
+                } else {
+                    log(`⚠️ La petición retornó success=false: ${response.error}`, 'warning');
+                }
+                
+                alert('✅ Test completado. Revisa los logs.');
+                
+            } catch (error) {
+                log(`❌ ERROR en la petición: ${error.message}`, 'error');
+                log(`Stack trace: <pre>${error.stack}</pre>`, 'error');
+                alert('❌ Error: ' + error.message);
+            }
+        }
+        
+        function showConfig() {
+            log('<h2>⚙️ CONFIGURACIÓN ACTUAL</h2>', 'info');
+            
+            if (typeof getDB === 'undefined') {
+                log('❌ getDB no está disponible', 'error');
+                return;
+            }
+            
+            try {
+                const config = getDB('proyecto_desarrollo');
+                log(`<pre>${JSON.stringify(config, null, 2)}</pre>`, 'info');
+            } catch (error) {
+                log(`❌ Error al obtener configuración: ${error.message}`, 'error');
+            }
+        }
+        
+        // Ejecutar al cargar
+        window.addEventListener('load', () => {
+            log('✅ Página cargada', 'success');
+            
+            setTimeout(() => {
+                updateChecklist();
+                log('💡 Haz clic en "Ejecutar Diagnóstico" para verificar todo', 'info');
+            }, 1000);
+        });
+    </script>
+</body>
+</html>

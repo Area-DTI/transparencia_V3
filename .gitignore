@@ -1,0 +1,26 @@
+# Configuración sensible
+# config/database.php
+config/google_oauth.php
+.env
+
+# Temporales
+*.log
+*.tmp
+*.bak
+*_old.php.bak
+
+# Carpetas
+logs/
+backups/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Usuario
+acceso.txt

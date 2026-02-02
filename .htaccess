@@ -1,0 +1,23 @@
+# Protección de archivos - Portal de Transparencia UAC
+<Files "database.php">
+    Order allow,deny
+    Deny from all
+</Files>
+<Files "google_oauth.php">
+    Order allow,deny
+    Deny from all
+</Files>
+<FilesMatch "\.(sql|bak|backup|log)$">
+    Order allow,deny
+    Deny from all
+</FilesMatch>
+<Files "acceso.txt">
+    Order allow,deny
+    Deny from all
+</Files>
+Options -Indexes
+<IfModule mod_headers.c>
+    Header set X-XSS-Protection "1; mode=block"
+    Header set X-Content-Type-Options "nosniff"
+    Header set X-Frame-Options "SAMEORIGIN"
+</IfModule>

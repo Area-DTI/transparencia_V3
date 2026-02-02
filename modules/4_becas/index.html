@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Becas - Portal de Transparencia UANDINA</title>
+
+    <link rel="icon" type="image/x-icon" href="../../favicon.ico">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"
+            integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo="
+            crossorigin="anonymous"></script>
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+          integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+          crossorigin="anonymous"
+          referrerpolicy="no-referrer" />
+
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/header.css">
+    <link rel="stylesheet" href="../../assets/css/footer.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ========================================================================
+         ARQUITECTURA DE 3 CAPAS - ORDEN DE CARGA CORRECTO
+         ======================================================================== -->
+    
+    <!-- 1. CAPA DE DATOS: Configuración de conexión a Google Sheets -->
+    <script src="../../config/database.js"></script>
+    
+    <!-- 2. CAPA DE LÓGICA: API de Becas (JS, no PHP) -->
+    <script src="../../api/becas.js"></script>
+    
+    <!-- 3. CAPA DE PRESENTACIÓN: Se carga al final (scripts.js) -->
+
+    <script>
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('🔧 MÓDULO: BECAS - ARQUITECTURA JS');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('✅ Capa 1 (Datos): config/database.js');
+        console.log('✅ Capa 2 (Lógica): api/becas.js');
+        console.log('⏳ Capa 3 (Presentación): scripts.js (se carga al final)');
+        console.log('═══════════════════════════════════════════════════════');
+    </script>
+</head>
+<body>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando datos de becas desde Google Sheets...</p>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <div id="headerContainer"></div>
+
+    <!-- Page Header Compacto -->
+            <div class="page-header-compact">
+                <div class="header-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Becas</h1>
+                    <p>Gestión y seguimiento de programas de becas institucionales</p>
+                </div>
+            </div>
+
+
+    <main class="main-content">
+        <div class="container">
+
+            <div class="info-banner">
+                <i class="fas fa-info-circle"></i>
+                <div>
+                    <strong>Información de Becas UAC</strong>
+                    <p>Consulta toda la información sobre becas ofrecidas, resúmenes y beneficiarios de la Universidad Andina del Cusco, agrupados por tipo de documento.</p>
+                </div>
+            </div>
+
+            <div class="filters-container">
+                <h2 class="filters-title">
+                    <i class="fas fa-filter"></i> Filtros de Búsqueda
+                </h2>
+
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="filtro-anio">
+                            <i class="fas fa-calendar-alt"></i> Año
+                        </label>
+                        <select id="filtro-anio" class="filter-select">
+                            <option value="">Todos los años</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button id="btn-limpiar-filtros" class="btn-clear">
+                            <i class="fas fa-times-circle"></i> Limpiar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resultado-info">
+                <i class="fas fa-file-invoice"></i>
+                <span id="total-documentos">0</span> documentos encontrados
+            </div>
+
+            <div id="secciones-container">
+                <!-- Se genera dinámicamente -->
+            </div>
+
+        </div>
+    </main>
+
+    <div id="footerContainer"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#headerContainer').load('../../header.html', function(response, status) {
+                if (status === "error") {
+                    console.warn('⚠️ Header no cargado');
+                    $('#headerContainer').html('<header class="header"><div class="container"><h1>Becas - UANDINA</h1></div></header>');
+                }
+            });
+
+            $('#footerContainer').load('../../footer.html', function(response, status) {
+                if (status === "error") {
+                    console.warn('⚠️ Footer no cargado');
+                }
+            });
+        });
+    </script>
+
+    <!-- CAPA 3: Lógica de presentación -->
+    <script src="scripts.js"></script>
+</body>
+</html>

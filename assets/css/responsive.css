@@ -1,0 +1,70 @@
+/* ===============================
+   RESPONSIVE GLOBAL DEL SITIO
+   =============================== */
+
+/* TABLETS */
+@media (max-width: 1024px) {
+
+    /* HEADER */
+    .main-nav {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+    }
+
+    .main-nav.active {
+        display: block;
+    }
+
+    .mobile-toggle {
+        display: flex;
+    }
+
+    /* FOOTER */
+    .footer-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* MÓVILES */
+@media (max-width: 768px) {
+
+    /* HEADER */
+    .top-header-container {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .logo-container img {
+        height: 50px;
+    }
+
+    .page-header-title {
+        font-size: 28px;
+    }
+
+    /* FOOTER */
+    .footer-container {
+        grid-template-columns: 1fr;
+    }
+
+    .footer-bottom .footer-container {
+        flex-direction: column;
+        text-align: center;
+        gap: 15px;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+}
+
+/* MÓVILES PEQUEÑOS */
+@media (max-width: 480px) {
+    .footer-title {
+        font-size: 16px;
+    }
+}

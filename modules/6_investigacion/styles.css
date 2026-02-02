@@ -1,0 +1,563 @@
+/* =============================================================================
+   INVESTIGACIÓN - ESTILOS MEJORADOS
+   ============================================================================= */
+
+:root {
+    --color-primary: #00cdff;
+    --color-primary-dark: #00a8d4;
+    --color-secondary: #003366;
+    --color-dark-blue: #00417b;
+    --color-blue-header: #1976d2;
+    --color-red: #dc3545;
+    --color-red-dark: #c82333;
+    --color-success: #28a745;
+    --color-gray-light: #f0f4f8;
+    --color-gray-lighter: #f8fafc;
+    --color-gray-medium: #e2e8f0;
+    --color-gray-dark: #64748b;
+    --color-text: #1e293b;
+    --color-text-light: #475569;
+    --border-radius: 12px;
+    --border-radius-sm: 8px;
+    --box-shadow: 0 1px 3px rgba(0,0,0,0.08), 0 4px 16px rgba(0,0,0,0.06);
+    --transition: all 0.25s ease;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--color-gray-light);
+    color: var(--color-text);
+    line-height: 1.6;
+}
+
+.container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+
+/* =============================================================================
+   LOADING & TOAST
+   ============================================================================= */
+
+.loading-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(15,23,42,0.85);
+    backdrop-filter: blur(4px);
+    z-index: 9999;
+    justify-content: center;
+    align-items: center;
+}
+
+.loading-content { text-align: center; color: white; }
+
+.loading-spinner {
+    width: 56px; height: 56px;
+    border: 4px solid rgba(255,255,255,0.15);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 20px;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loading-content p { font-size: 0.95rem; color: rgba(255,255,255,0.7); font-weight: 500; }
+
+.toast {
+    display: none;
+    position: fixed;
+    top: 90px; right: 24px;
+    background: white;
+    padding: 14px 22px;
+    border-radius: 10px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+    z-index: 10000;
+    font-weight: 500;
+    font-size: 0.88rem;
+    min-width: 280px; max-width: 380px;
+}
+
+.toast i { margin-right: 8px; }
+.toast.success { border-left: 4px solid var(--color-success); color: var(--color-success); }
+.toast.error   { border-left: 4px solid var(--color-red);     color: var(--color-red); }
+.toast.info    { border-left: 4px solid var(--color-primary);  color: #0891b2; }
+
+/* =============================================================================
+   PAGE HEADER
+   ============================================================================= */
+
+.main-container { padding: 32px 0 48px; min-height: calc(100vh - 200px); }
+
+.page-header-compact {
+    display: flex;
+    align-items: center;
+    gap: 22px;
+    margin-bottom: 24px;
+    padding: 22px 28px;
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid rgba(0,0,0,0.04);
+}
+
+.header-icon-box {
+    width: 64px; height: 64px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-dark-blue));
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 6px 16px rgba(0,205,255,0.3);
+}
+
+.header-icon-box i { font-size: 1.8rem; color: white; }
+
+.header-title {
+    font-size: 1.75rem; font-weight: 700;
+    color: var(--color-secondary);
+    margin: 0 0 2px; line-height: 1.2;
+}
+
+.header-subtitle { font-size: 0.88rem; color: var(--color-gray-dark); margin: 0; font-weight: 400; }
+
+/* =============================================================================
+   CACHÉ CONTROLS
+   ============================================================================= */
+
+.cache-controls {
+    display: flex; align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap; gap: 12px;
+    margin-bottom: 20px;
+    padding: 12px 20px;
+    background: white;
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+    border: 1px solid var(--color-gray-medium);
+}
+
+.cache-info { display: flex; align-items: center; gap: 10px; font-size: 0.82rem; color: var(--color-gray-dark); }
+.cache-info i { color: var(--color-primary); font-size: 0.9rem; }
+.cache-buttons { display: flex; gap: 8px; flex-wrap: wrap; }
+
+.btn-cache {
+    display: inline-flex; align-items: center; gap: 6px;
+    padding: 7px 14px;
+    background: var(--color-gray-lighter);
+    border: 1px solid var(--color-gray-medium);
+    border-radius: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.78rem; font-weight: 600;
+    color: var(--color-text-light);
+    cursor: pointer; transition: var(--transition);
+}
+
+.btn-cache:hover { background: #eef2ff; border-color: var(--color-primary); color: var(--color-secondary); }
+.btn-cache i { font-size: 0.75rem; }
+
+.btn-cache-update { background: linear-gradient(135deg,#eef9ff,#e0f2fe); border-color: #7dd3fc; color: #0369a1; }
+.btn-cache-update:hover { background: linear-gradient(135deg,#dbeafe,#bae6fd); }
+.btn-cache-clear { background: #fef2f2; border-color: #fca5a5; color: var(--color-red); }
+.btn-cache-clear:hover { background: #fee2e2; }
+
+/* =============================================================================
+   TABS
+   ============================================================================= */
+
+.tabs-buttons-container {
+    background: white;
+    padding: 18px 22px;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid rgba(0,0,0,0.04);
+    margin-bottom: 20px;
+}
+
+.tabs-buttons { display: flex; flex-wrap: wrap; gap: 10px; }
+
+.tab-button {
+    padding: 10px 22px;
+    background: var(--color-gray-lighter);
+    border: 2px solid var(--color-gray-medium);
+    border-radius: var(--border-radius-sm);
+    color: var(--color-text-light);
+    font-size: 0.9rem; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+    font-family: 'Poppins', sans-serif;
+    display: inline-flex; align-items: center; gap: 8px;
+}
+
+.tab-button:hover {
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
+    background: #f0fdff;
+    transform: translateY(-1px);
+}
+
+.tab-button.active {
+    background: linear-gradient(135deg, var(--color-primary), #00a8d4);
+    border-color: transparent; color: white;
+    box-shadow: 0 4px 14px rgba(0,205,255,0.35);
+    transform: translateY(-1px);
+}
+
+.tab-button i { font-size: 1rem; }
+
+.tab-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 24px; height: 20px; padding: 0 7px;
+    border-radius: 10px;
+    font-size: 0.75rem; font-weight: 700;
+    background: rgba(0,0,0,0.08); color: inherit;
+}
+
+.tab-button.active .tab-badge { background: rgba(255,255,255,0.3); color: white; }
+
+/* =============================================================================
+   SELECTOR DE FACULTADES
+   ============================================================================= */
+
+.facultades-selector {
+    margin-top: 18px; padding-top: 16px;
+    border-top: 1px solid var(--color-gray-medium);
+    display: flex; align-items: center;
+    flex-wrap: wrap; gap: 12px;
+}
+
+.facultades-selector label {
+    font-weight: 600; color: var(--color-secondary);
+    font-size: 0.88rem; display: flex;
+    align-items: center; gap: 6px; white-space: nowrap;
+}
+
+.facultades-selector label i { color: var(--color-primary); }
+
+.select-facultad {
+    flex: 1; min-width: 220px; max-width: 420px;
+    padding: 9px 14px;
+    border: 2px solid var(--color-gray-medium);
+    border-radius: var(--border-radius-sm);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.88rem; color: var(--color-text);
+    background: white; cursor: pointer;
+    transition: var(--transition); appearance: auto;
+}
+
+.select-facultad:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0,205,255,0.15);
+}
+
+/* =============================================================================
+   CONTENT AREA
+   ============================================================================= */
+
+.content-area {
+    background: white;
+    border-radius: var(--border-radius);
+    box-shadow: var(--box-shadow);
+    border: 1px solid rgba(0,0,0,0.04);
+    overflow: hidden;
+}
+
+.tabs-content { padding: 0; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; animation: fadeIn 0.3s ease; }
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(4px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* =============================================================================
+   TABLA DGI / INSTITUTO CIENTÍFICO
+   Cada fila tiene su propio bloque de año (sin rowspan).
+   ============================================================================= */
+
+.tabla-dgi-wrapper { padding: 0; overflow-x: auto; }
+
+.tabla-dgi-ic { width: 100%; border-collapse: collapse; }
+
+.tabla-dgi-ic thead {
+    background: linear-gradient(135deg, var(--color-blue-header), var(--color-dark-blue));
+}
+
+.tabla-dgi-ic thead th {
+    padding: 14px 16px;
+    font-weight: 600; text-align: center;
+    font-size: 0.78rem; text-transform: uppercase;
+    letter-spacing: 0.8px; color: white;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    white-space: nowrap;
+}
+
+.tabla-dgi-ic thead th:last-child { border-right: none; }
+
+.tabla-dgi-ic tbody tr {
+    border-bottom: 1px solid var(--color-gray-medium);
+    transition: background 0.2s ease;
+}
+
+.tabla-dgi-ic tbody tr:last-child { border-bottom: none; }
+.tabla-dgi-ic tbody tr:hover { background-color: #f0fdff; }
+
+.tabla-dgi-ic tbody td {
+    padding: 16px 16px;
+    font-size: 0.88rem;
+    vertical-align: middle;
+    color: var(--color-text-light);
+}
+
+/* Celda año: bloque azul oscuro con borde derecho cyan — siempre presente */
+.tabla-dgi-ic tbody td.anio-cell {
+    background: linear-gradient(135deg, var(--color-dark-blue), #002a5c);
+    color: white;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-align: center;
+    padding: 16px 8px;
+    letter-spacing: 0.3px;
+    border-right: 3px solid var(--color-primary);
+    width: 120px;
+    min-width: 100px;
+    white-space: nowrap;
+}
+
+/* Título */
+.tabla-dgi-ic tbody td.titulo-cell {
+    font-weight: 500;
+    color: var(--color-text);
+    text-align: left;
+}
+
+/* Sin dato */
+.dato-vacio { color: #cbd5e1; text-align: center; font-size: 1.05rem; }
+
+/* =============================================================================
+   BOTONES PDF
+   ============================================================================= */
+
+.btn-pdf-texto {
+    display: inline-flex; align-items: center; justify-content: center;
+    gap: 8px;
+    background: linear-gradient(135deg, var(--color-red), #e53935);
+    color: white; padding: 10px 18px;
+    border-radius: 7px; text-decoration: none;
+    font-weight: 600; font-size: 0.8rem;
+    transition: var(--transition);
+    text-transform: uppercase; letter-spacing: 0.4px;
+    box-shadow: 0 2px 8px rgba(220,53,69,0.25);
+}
+
+.btn-pdf-texto:hover {
+    background: linear-gradient(135deg, var(--color-red-dark), #c62828);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 14px rgba(220,53,69,0.4);
+    color: white;
+}
+
+.btn-pdf-texto i { font-size: 0.95rem; }
+
+.btn-pdf-icono {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: linear-gradient(135deg, var(--color-red), #e53935);
+    color: white; padding: 8px 14px;
+    border-radius: 6px; text-decoration: none;
+    font-weight: 600; font-size: 0.8rem;
+    transition: var(--transition);
+    box-shadow: 0 2px 6px rgba(220,53,69,0.2);
+}
+
+.btn-pdf-icono:hover {
+    background: linear-gradient(135deg, var(--color-red-dark), #c62828);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220,53,69,0.35);
+    color: white;
+}
+
+.btn-pdf-icono i { font-size: 0.88rem; }
+
+.sin-dato { color: #cbd5e1; font-size: 1rem; }
+
+/* =============================================================================
+   TESIS — SECCIONES COLAPSIBLES
+   ============================================================================= */
+
+.facultad-container { padding: 0; }
+.escuela-seccion { border-bottom: 1px solid var(--color-gray-medium); }
+.escuela-seccion:last-child { border-bottom: none; }
+
+.escuela-header {
+    color: white; padding: 14px 22px;
+    cursor: pointer;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: var(--transition); user-select: none; gap: 12px;
+}
+
+.escuela-header:hover { filter: brightness(1.08); }
+
+.escuela-header:not(.collapsed) {
+    background: linear-gradient(135deg, var(--color-blue-header), var(--color-dark-blue)) !important;
+}
+
+.escuela-header.collapsed {
+    background: linear-gradient(135deg, #0891b2, #0e4d6e) !important;
+}
+
+.escuela-titulo {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 0.92rem; font-weight: 600; min-width: 0;
+}
+
+.collapse-icon {
+    flex-shrink: 0; font-size: 0.75rem;
+    transition: transform 0.3s ease;
+    width: 12px; text-align: center;
+}
+
+.escuela-titulo i.fa-university { font-size: 1rem; flex-shrink: 0; }
+
+.escuela-titulo span {
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+
+.escuela-count {
+    background: rgba(255,255,255,0.2);
+    padding: 4px 12px; border-radius: 12px;
+    font-size: 0.78rem; font-weight: 600;
+    white-space: nowrap; flex-shrink: 0;
+}
+
+.escuela-body { background: white; }
+
+/* =============================================================================
+   TABLA TESIS
+   ============================================================================= */
+
+.tabla-tesis-wrapper { overflow-x: auto; }
+.tabla-tesis { width: 100%; border-collapse: collapse; }
+
+.tabla-tesis thead {
+    background: linear-gradient(135deg, var(--color-secondary), #002952);
+}
+
+.tabla-tesis thead th {
+    padding: 12px 16px; font-weight: 600; text-align: center;
+    font-size: 0.76rem; text-transform: uppercase;
+    letter-spacing: 0.7px; color: white;
+    border-right: 1px solid rgba(255,255,255,0.1); white-space: nowrap;
+}
+
+.tabla-tesis thead th:last-child { border-right: none; }
+
+.tabla-tesis tbody tr {
+    border-bottom: 1px solid var(--color-gray-medium);
+    transition: background 0.2s ease;
+}
+
+.tabla-tesis tbody tr:last-child { border-bottom: none; }
+.tabla-tesis tbody tr:nth-child(even) { background-color: var(--color-gray-lighter); }
+.tabla-tesis tbody tr:hover { background-color: #f0fdff !important; }
+
+.tabla-tesis tbody td {
+    padding: 12px 16px; font-size: 0.86rem;
+    vertical-align: middle; color: var(--color-text-light);
+}
+
+.tabla-tesis tbody td:nth-child(2) {
+    text-align: left; color: var(--color-text); font-weight: 500;
+}
+
+.numero-badge {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 30px; height: 30px;
+    background: linear-gradient(135deg, var(--color-primary), #00a8d4);
+    color: white; border-radius: 50%;
+    font-weight: 700; font-size: 0.78rem;
+    box-shadow: 0 2px 6px rgba(0,205,255,0.3);
+}
+
+/* =============================================================================
+   ESTADOS VACÍOS / ERRORES
+   ============================================================================= */
+
+.mensaje-vacio, .mensaje-error { text-align: center; padding: 64px 24px; }
+
+.mensaje-vacio i.fa-3x { font-size: 3.5rem; color: #cbd5e1; margin-bottom: 18px; display: block; }
+.error-icon { font-size: 3.5rem; color: var(--color-red); margin-bottom: 18px; display: block; }
+
+.mensaje-error h3 { color: var(--color-text); font-size: 1.1rem; margin-bottom: 8px; }
+.mensaje-error p, .mensaje-vacio p {
+    color: var(--color-gray-dark); font-size: 0.9rem;
+    max-width: 480px; margin: 0 auto;
+}
+
+.btn-reintentar {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 10px 24px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-dark-blue));
+    color: white; border: none;
+    border-radius: var(--border-radius-sm);
+    font-size: 0.88rem; font-weight: 600;
+    cursor: pointer; transition: var(--transition);
+    font-family: 'Poppins', sans-serif;
+    margin-top: 16px;
+    box-shadow: 0 3px 10px rgba(0,65,123,0.25);
+}
+
+.btn-reintentar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 18px rgba(0,65,123,0.35);
+}
+
+/* =============================================================================
+   UTILIDADES
+   ============================================================================= */
+
+.text-center { text-align: center; }
+
+/* =============================================================================
+   RESPONSIVE
+   ============================================================================= */
+
+@media (max-width: 900px) {
+    .tabla-dgi-ic .col-facultad,
+    .tabla-dgi-ic .col-escuela { display: none; }
+    .tabla-dgi-ic thead th.col-facultad,
+    .tabla-dgi-ic thead th.col-escuela { display: none; }
+}
+
+@media (max-width: 768px) {
+    .main-container { padding: 20px 0 36px; }
+
+    .page-header-compact {
+        flex-direction: column; text-align: center;
+        padding: 18px; gap: 14px;
+    }
+
+    .header-icon-box { width: 56px; height: 56px; }
+    .header-icon-box i { font-size: 1.5rem; }
+    .header-title { font-size: 1.4rem; }
+
+    .cache-controls { flex-direction: column; align-items: flex-start; padding: 10px 14px; }
+    .tabs-buttons { justify-content: center; }
+
+    .tab-button { flex: 1 1 auto; min-width: 120px; justify-content: center; font-size: 0.82rem; padding: 9px 16px; }
+
+    .facultades-selector { flex-direction: column; align-items: flex-start; }
+    .select-facultad { max-width: 100%; }
+
+    .tabla-dgi-ic tbody td.anio-cell { width: 80px; min-width: 80px; font-size: 0.82rem; }
+    .tabla-dgi-ic thead th, .tabla-tesis thead th { padding: 10px 10px; font-size: 0.7rem; }
+    .tabla-dgi-ic tbody td, .tabla-tesis tbody td { padding: 10px 10px; font-size: 0.8rem; }
+    .btn-pdf-texto, .btn-pdf-icono { font-size: 0.72rem; padding: 7px 10px; gap: 5px; }
+    .escuela-header { padding: 12px 16px; }
+    .escuela-titulo { font-size: 0.82rem; }
+}
+
+@media (max-width: 480px) {
+    .container { padding: 12px; }
+    .tabla-dgi-ic tbody td.anio-cell { width: 64px; min-width: 64px; font-size: 0.75rem; padding: 12px 6px; }
+    .btn-pdf-texto span, .btn-pdf-icono span { display: none; }
+}

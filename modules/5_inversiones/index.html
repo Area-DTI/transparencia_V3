@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inversiones - Portal de Transparencia UANDINA</title>
+
+    <link rel="icon" type="image/png" href="https://www.uandina.edu.pe/wp-content/uploads/2023/01/cropped-favicon-uac-32x32.png">
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.8/css/jquery.dataTables.min.css">
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <link rel="stylesheet" href="../../assets/css/base.css">
+    <link rel="stylesheet" href="../../assets/css/header.css">
+    <link rel="stylesheet" href="../../assets/css/footer.css">
+    <link rel="stylesheet" href="../../assets/css/responsive.css">
+
+    
+
+
+    <link rel="stylesheet" href="styles.css">
+
+    <!-- ========================================================================
+         ARQUITECTURA DE 3 CAPAS - ORDEN DE CARGA CORRECTO
+         ======================================================================== -->
+
+    <!-- 1. CAPA DE DATOS: Configuración de conexión a Google Sheets -->
+    <script src="../../config/database.js"></script>
+
+    <!-- 2. CAPA DE LÓGICA: API de Inversiones (JS, no PHP) -->
+    <script src="../../api/inversiones.js"></script>
+
+    <!-- 3. CAPA DE PRESENTACIÓN: Se carga al final (scripts.js) -->
+
+    <script>
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('🔧 MÓDULO: INVERSIONES - ARQUITECTURA JS');
+        console.log('═══════════════════════════════════════════════════════');
+        console.log('✅ Capa 1 (Datos): config/database.js');
+        console.log('✅ Capa 2 (Lógica): api/inversiones.js');
+        console.log('⏳ Capa 3 (Presentación): scripts.js (se carga al final)');
+        console.log('═══════════════════════════════════════════════════════');
+    </script>
+</head>
+<body>
+
+    <div id="headerContainer"></div>
+
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="spinner"></div>
+        <p>Cargando datos de inversiones desde Google Sheets...</p>
+    </div>
+
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Page Header Compacto -->
+            <div class="page-header-compact">
+                <div class="header-icon">
+                    <i class="fas fa-folder-open"></i>
+                </div>
+                <div class="header-text">
+                    <h1>Inversiones y Reinversiones UAC</h1>
+                    <p>Consulta la información sobre inversiones, reinversiones</p>
+                </div>
+            </div>
+
+    <main class="main-content">
+        <div class="container">
+
+           
+
+            <div class="filters-container">
+                <h2 class="filters-title">
+                    <i class="fas fa-filter"></i> Filtros de Búsqueda
+                </h2>
+
+                <div class="filters-grid">
+                    <div class="filter-group">
+                        <label for="filtro-anio">
+                            <i class="fas fa-calendar-alt"></i> Año
+                        </label>
+                        <select id="filtro-anio" class="filter-select">
+                            <option value="">Todos los años</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label>&nbsp;</label>
+                        <button id="btn-limpiar-filtros" class="btn-clear">
+                            <i class="fas fa-times-circle"></i> Limpiar Filtros
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="resultado-info">
+                <i class="fas fa-file-invoice"></i>
+                <span id="total-documentos">0</span> documentos encontrados
+            </div>
+
+            <div id="secciones-container">
+                <!-- Secciones se generan dinámicamente -->
+            </div>
+
+        </div>
+    </main>
+
+    <div id="footerContainer"></div>
+
+    <script>
+        $(document).ready(function() {
+            $('#headerContainer').load('../../header.html', function(response, status) {
+                if (status === "error") {
+                    console.warn('⚠️ Header no cargado');
+                    $('#headerContainer').html('<header class="header"><div class="container"><h1>Inversiones - UANDINA</h1></div></header>');
+                }
+            });
+
+            $('#footerContainer').load('../../footer.html', function(response, status) {
+                if (status === "error") {
+                    console.warn('⚠️ Footer no cargado');
+                }
+            });
+        });
+    </script>
+
+    <!-- CAPA 3: Lógica de presentación -->
+    <script src="scripts.js"></script>
+</body>
+</html>

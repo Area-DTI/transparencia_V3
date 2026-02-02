@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal de Transparencia - UAC</title>
+
+    <!-- Font Awesome (versión 6) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="assets/css/base.css">
+    <link rel="stylesheet" href="assets/css/footer.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e5ba8 0%, #00cefe 100%);
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 60px 20px;
+        }
+        .intro-text {
+            text-align: center;
+            margin-bottom: 50px;
+            color: white;
+        }
+        .intro-text h2 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+        .intro-text p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        /* Estilos de Tarjeta */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 35px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            min-height: 280px;
+        }
+        .card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.2);
+        }
+        .card-icon {
+            font-size: 3.5em;
+            margin-bottom: 15px;
+            color: #1e5ba8;
+        }
+        .card h2 {
+            color: #1e5ba8;
+            font-size: 1.4em;
+            margin: 10px 0;
+        }
+        .card p {
+            color: #555;
+            font-size: 0.95em;
+            flex-grow: 1;
+            line-height: 1.6;
+        }
+        .card-link {
+            display: inline-block;
+            margin-top: 20px;
+            padding: 12px 25px;
+            background: #1e5ba8;
+            color: white;
+            text-decoration: none;
+            border-radius: 25px;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.8em;
+            transition: background 0.3s ease;
+        }
+        .card-link:hover {
+            background: #00cefe;
+        }
+
+        /* Loading */
+        .loading {
+            color: white;
+            text-align: center;
+            font-size: 1.2em;
+            width: 100%;
+            grid-column: 1 / -1;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255,255,255,0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Error */
+        .error-message {
+            background: rgba(220, 53, 69, 0.9);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            grid-column: 1 / -1;
+        }
+        .error-message i {
+            font-size: 3em;
+            margin-bottom: 15px;
+            display: block;
+        }
+        .btn-retry {
+            background: white;
+            color: #dc3545;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 15px;
+            transition: transform 0.2s ease;
+        }
+        .btn-retry:hover {
+            transform: scale(1.05);
+        }
+
+        /* Mensaje vacío */
+        .empty-message {
+            text-align: center;
+            color: white;
+            font-size: 1.2em;
+            grid-column: 1 / -1;
+            padding: 40px;
+        }
+        .empty-message i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+            opacity: 0.5;
+        }
+    </style>
+</head>
+<body>
+    <div id="header-container"></div>
+
+    <div class="container">
+        <div class="intro-text">
+            <h2>🏛️ Portal de Transparencia</h2>
+            <p>Universidad Andina del Cusco</p>
+        </div>
+
+        <div class="grid" id="cards-grid">
+            <div class="loading">
+                <div class="loading-spinner"></div>
+                <p>Cargando módulos desde Google Sheets...</p>
+            </div>
+        </div>
+    </div>
+
+    <div id="footer-container"></div>
+
+    <!-- CAPA 1: Configuración base -->
+    <script src="config/database.js"></script>
+    <!-- CAPA 2: API de Cards -->
+    <script src="api/get_cards.js"></script>
+
+    <script>
+        // =================================================================
+        // 1. CARGAR COMPONENTES (Header/Footer)
+        // =================================================================
+
+        fetch('header.html')
+            .then(r => r.text())
+            .then(d => document.getElementById('header-container').innerHTML = d)
+            .catch(e => console.warn('⚠️ Header no disponible'));
+
+        fetch('footer.html')
+            .then(r => r.text())
+            .then(d => document.getElementById('footer-container').innerHTML = d)
+            .catch(e => console.warn('⚠️ Footer no disponible'));
+
+        // =================================================================
+        // 2. VERIFICAR QUE CardsAPI ESTÉ CARGADO
+        // =================================================================
+
+        if (typeof CardsAPI === 'undefined') {
+            console.error('❌ ERROR: api/get_cards.js no está cargado');
+            document.getElementById('cards-grid').innerHTML = `
+                <div class="error-message">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    <h3>Error de Configuración</h3>
+                    <p>Falta cargar api/get_cards.js</p>
+                </div>
+            `;
+        }
+
+        // =================================================================
+        // 3. CARGAR Y RENDERIZAR TARJETAS
+        // =================================================================
+
+        async function loadCards() {
+            console.log('═══════════════════════════════════════════════════════');
+            console.log('📥 Cargando tarjetas del portal...');
+            console.log('═══════════════════════════════════════════════════════');
+
+            try {
+                // Llamar a CardsAPI
+                const cards = await CardsAPI.getAll();
+
+                console.log('✅ Cards obtenidas:', cards.length);
+                console.log('📊 Cards:', cards);
+
+                const grid = document.getElementById('cards-grid');
+
+                // Si no hay cards
+                if (cards.length === 0) {
+                    grid.innerHTML = `
+                        <div class="empty-message">
+                            <i class="fas fa-inbox"></i>
+                            <p>No hay módulos disponibles</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                // Limpiar grid
+                grid.innerHTML = '';
+
+                // Renderizar cada card
+                cards.forEach(card => {
+                    // Construir ruta correcta
+                    let fullPath = card.link_url;
+
+                    // Si la ruta NO empieza con "/" ni con "http", agregar prefijo
+                    if (!fullPath.startsWith('/') && !fullPath.startsWith('http')) {
+                        // Si NO tiene "modules/" al inicio, agregarlo
+                        if (!fullPath.includes('modules/')) {
+                            fullPath = `modules/${fullPath}`;
+                        }
+                    }
+
+                    console.log('📍 Card:', card.title, '→', fullPath);
+
+                    // Crear elemento card
+                    const cardDiv = document.createElement('div');
+                    cardDiv.className = 'card';
+
+                    // Determinar el icono: si es un emoji, usarlo directamente, si no, usar Font Awesome
+                    let iconHtml = '';
+                    if (card.icon && card.icon.startsWith('fa-')) {
+                        // Es un icono de Font Awesome (ej: fa-file-alt)
+                        iconHtml = `<i class="fas ${card.icon}"></i>`;
+                    } else if (card.icon && card.icon.length <= 2) {
+                        // Es un emoji (ej: 📄)
+                        iconHtml = `<span style="font-size: 3.5em;">${card.icon}</span>`;
+                    } else {
+                        // Icono por defecto
+                        iconHtml = `<i class="fas fa-info-circle"></i>`;
+                    }
+
+                    cardDiv.innerHTML = `
+                        <div>
+                            <div class="card-icon">
+                                ${iconHtml}
+                            </div>
+                            <h2>${escapeHtml(card.title)}</h2>
+                            <p>${escapeHtml(card.description)}</p>
+                        </div>
+                        <a href="${escapeHtml(fullPath)}" class="card-link">
+                            ${escapeHtml(card.link_text)}
+                        </a>
+                    `;
+
+                    grid.appendChild(cardDiv);
+                });
+
+                console.log('✅ Cards renderizadas correctamente');
+                console.log('═══════════════════════════════════════════════════════');
+
+            } catch (error) {
+                console.error('═══════════════════════════════════════════════════════');
+                console.error('❌ Error cargando tarjetas:', error);
+                console.error('═══════════════════════════════════════════════════════');
+
+                document.getElementById('cards-grid').innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <h3>Error al Cargar Módulos</h3>
+                        <p>${error.message || 'No se pudo conectar con Google Sheets'}</p>
+                        <button class="btn-retry" onclick="loadCards()">
+                            <i class="fas fa-sync-alt"></i> Reintentar
+                        </button>
+                    </div>
+                `;
+            }
+        }
+
+        // =================================================================
+        // 4. FUNCIÓN DE ESCAPE HTML (Seguridad)
+        // =================================================================
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        // =================================================================
+        // 5. INICIAR CARGA DE CARDS
+        // =================================================================
+
+        // Esperar a que el DOM esté listo
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadCards);
+        } else {
+            loadCards();
+        }
+
+        // =================================================================
+        // 6. DEBUG (Consola del navegador)
+        // =================================================================
+
+        window.portalDebug = {
+            recargar: () => {
+                console.log('♻️ Recargando cards...');
+                loadCards();
+            },
+            ver: async () => {
+                const cards = await CardsAPI.getAll();
+                console.table(cards);
+                return cards;
+            },
+            info: () => {
+                console.log('═══════════════════════════════════════════════════════');
+                console.log('📊 INFORMACIÓN DEL PORTAL');
+                console.log('═══════════════════════════════════════════════════════');
+                console.log('CardsAPI cargado:', typeof CardsAPI !== 'undefined');
+                console.log('Database cargado:', typeof getDB !== 'undefined');
+                console.log('═══════════════════════════════════════════════════════');
+            }
+        };
+
+        console.log('💡 Funciones de debug disponibles:');
+        console.log('   portalDebug.recargar() - Recargar cards');
+        console.log('   portalDebug.ver()      - Ver cards en tabla');
+        console.log('   portalDebug.info()     - Info del sistema');
+    </script>
+
+    <!-- SERVICE WORKER -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('/sw.js').then(reg => {
+                console.log('✅ Service Worker registrado, scope:', reg.scope);
+            }).catch(err => {
+                console.warn('⚠️ SW no se registró:', err);
+            });
+        }
+    </script>
+</body>
+</html>
